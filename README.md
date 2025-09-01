@@ -1,64 +1,142 @@
-Markdown
- Mini-Projeto: Pipeline de Dados e Análise com SQL no BigQuery
+ Pipeline de Dados e Análise com SQL no BigQuery
 
-Aluna: Michele Cristina Fonseca 
-Grupo 3_14
+1. Objetivo
 
-1_ Visão Geral do Projeto.
-Este projeto implementa um pipeline de dados completo para a Livraria DevSaber, uma loja online fictícia. O objetivo é estruturar os dados de vendas, que estavam originalmente em um formato de planilha, em um Data Warehouse no Google BigQuery. A partir dessa estrutura, são realizadas análises para extrair insights de negócio valiosos.
+Este projeto demonstra a construção de um pipeline de dados analítico no Google BigQuery, transformando dados transacionais brutos de uma livraria online na Livraria DevSaber em um mini data warehouse. O objetivo foi resolver o desafio de gerenciar dados dispersos em planilhas, garantindo a integridade das informações e permitindo a extração de insights valiosos para o negócio.
 
-O pipeline consiste em três etapas principais:
-1.Criação do Schema (DDL): Definição das tabelas Clientes, Produtos e Vendas.
-2.Ingestão de Dados (DML): Inserção dos dados normalizados nas tabelas.
-3.Análise e Automação: Execução de consultas analíticas e criação de uma VIEW para simplificar relatórios.
+O pipeline foi estruturado em três etapas principais, seguindo as melhores práticas da engenharia de dados:
 
-__
-2.Estrutura do Banco de Dados Schema.
-O schema foi modelado para ser normalizado, evitando redundância e garantindo a integridade dos dados.
-Clientes: Armazena dados únicos dos clientes.
- ID_Cliente INT64: Identificador único do cliente.
- Nome_Cliente STRING: Nome do cliente.
- Email_Cliente STRING: Email do cliente.
- Estado_Cliente STRING: Estado de residência do cliente.
-Produtos: Armazena dados únicos dos produtos.
-ID_Produto INT64: Identificador único do produto.
-Nome_Produto STRING: Nome do produto.
-Categoria_Produto STRING: Categoria do produto.
-Preco_Produto NUMERIC: Preço unitário do produto.
-Vendas: Tabela de fatos que registra as transações, conectando clientes e produtos.
-ID_Venda INT64: Identificador único da venda.
-ID_Cliente INT64: Chave lógica que referencia a tabela Clientes.
-ID_Produto INT64: Chave lógica que referencia a tabela Produtos.
-Data_Venda DATE: Data em que a venda ocorreu.
-Quantidade INT64: Quantidade de itens vendidos na transação.
+1.  Modelagem e Definição do Schema DDL: Foram criadas tabelas normalizadas (`Clientes`, `Produtos`, `Vendas`) no BigQuery, estabelecendo uma estrutura de dados lógica e otimizada para análises futuras.
+2.  Ingestão de Dados DML: Os dados brutos foram migrados e inseridos nas tabelas, garantindo a consistência e a limpeza das informações.
+3.  Análise e Automação de Relatórios: Consultas analíticas foram desenvolvidas para responder a perguntas de negócio. Uma VIEW foi criada para encapsular a lógica de relatório, simplificando o acesso a dados consolidados para a equipe de gestão.
 
-__
-3_Perguntas e Respostas Documentação.
-Por que uma planilha não é ideal para uma empresa que quer analisar suas vendas a fundo?
+Tecnologias e Ferramentas.
 
-Planilhas são ótimas para tarefas simples, mas se tornam ineficientes e arriscadas para análises de negócio por várias razões:
-Redundância de Dados: Informações como nome e email de um cliente são repetidas a cada compra, aumentando a chance de erros de digitação e inconsistências.
-Falta de Integridade: Não há como garantir que um produto ou cliente inserido em uma nova venda realmente exista ou que os dados como preço estejam corretos.
-Dificuldade em Consultas Complexas: Cruzar informações ex: total de vendas por categoria de produto para clientes de SP é manual, complexo e lento.
-Escalabilidade Limitada: Planilhas sofrem com grandes volumes de dados, ficando lentas e difíceis de gerenciar.
+Google BigQuery: Banco de dados analítico em nuvem, serverless e de alta escalabilidade.
+SQL Standard SQL: Linguagem padrão para definição, manipulação e consulta dos dados.
+Google Cloud Console: Interface para gerenciamento dos recursos e execução das consultas.
 
-__
-1) Se o BigQuery não tem chaves estrangeiras, como garantimos que um ID_Cliente na tabela de vendas realmente existe na tabela de clientes?
+---
 
-R) A responsabilidade pela integridade referencial é transferida do banco de dados para o desenvolvedor ou para o processo de ETL Extração, Transformação e Carga. No meu caso, garanti a integridade de duas formas:
+ Detalhamento Técnico do Projeto
 
-A) Na Carga INSERT: Inseri primeiro os dados mestres Clientes e Produtos e só depois os dados transacionais Vendas, utilizando os IDs já existentes.
-B) Na Consulta SELECT: Utilizei a cláusula INNER JOIN. Um INNER JOIN entre Vendas e Clientes ON Vendas.ID_Cliente = Clientes.ID_Cliente só retornará registros de vendas que possuam um cliente correspondente. Vendas com um ID_Cliente inválido seriam naturalmente excluídas do resultado, agindo como um filtro de integridade.
+1. Estruturando o Armazenamento: create_tables_bigquery.sql
 
-__
-2) Qual é a principal vantagem de usar uma VIEW em vez de simplesmente salvar o código em um arquivo de texto?
+O primeiro passo foi criar a estrutura de tabelas, o que foi feito com atenção às particularidades do BigQuery. A modelagem normalizada garante que a informação não seja duplicada. O script a seguir cria as tabelas Clientes, Produtos e Vendas, utilizando a nomenclatura completa (projeto.dataset.tabela) e os tipos de dados nativos do BigQuery.
 
-R) A principal vantagem de uma VIEW é a abstração e o reuso com governança.
- Abstração: Ela esconde a complexidade dos JOINs e cálculos. Um analista pode simplesmente fazer SELECT  FROM v_relatorio_vendas_detalhado sem precisar saber como o Valor_Total_Venda é calculado ou como as tabelas são unidas.
- Consistência: Garante que todos na empresa usem a mesma lógica de negócio. Se a fórmula para calcular o valor total mudar, alteramos apenas na VIEW, e todos os relatórios que a utilizam são atualizados automaticamente. Um arquivo de texto não oferece essa centralização.
- Segurança: É possível conceder permissão de acesso à VIEW sem dar acesso direto às tabelas base.
-__
-3) Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
+Diferenciais do BigQuery: O projeto demonstra a compreensão de conceitos importantes, como a ausência de restrições de chaves PRIMARY KEY e FOREIGN KEY, o que é um paradigma fundamental em bancos de dados analíticos.
 
-R) Sim. Uma VIEW no BigQuery por padrão é uma entidade lógica, não materializada. Isso significa que ela não armazena os dados. Ela é, essencialmente, uma consulta salva. Toda vez que a VIEW é executada, o BigQuery roda a consulta SQL subjacente em tempo real sobre os dados mais atuais das tabelas. Portanto, se o preço de um produto for alterado na tabela Produtos, a VIEW refletirá esse novo preço imediatamente na próxima consulta.
+Tabela de Clientes
 
+ Armazena informações únicas de cada cliente.
+ No BigQuery, chaves primárias não são impostas, mas `ID_Cliente` serve como identificador lógico.
+
+
+CREATE OR REPLACE TABLE `t1engenharinadados.livraria_devsaber.Clientes` (
+    ID_Cliente INT64,
+    Nome_Cliente STRING,
+    Email_Cliente STRING,
+    Estado_Cliente STRING
+);
+
+
+Dados de Exemplo:
+
+| ID\_Cliente | Nome\_Cliente | Email\_Cliente | Estado\_Cliente |
+| :--- | :--- | :--- | :--- |
+| 1 | Ana Silva | ana.s@email.com | SP |
+| 2 | Bruno Costa | b.costa@email.com | RJ |
+| 3 | Carla Dias | carla.d@email.com | SP |
+| 4 | Daniel Souza | daniel.s@email.com | MG |
+
+Tabela de Produtos
+
+ Armazena informações únicas de cada produto.
+
+
+CREATE OR REPLACE TABLE `t1engenharinadados.livraria_devsaber.Produtos` (
+    ID_Produto INT64,
+    Nome_Produto STRING,
+    Categoria_Produto STRING,
+    Preco_Produto NUMERIC
+);
+
+
+
+
+| ID | Nome Produto | Categoria Produto | Preco Produto |
+| :--- | :--- | :--- | :--- |
+| 101 | Fundamentos de SQL | Dados | 60,00 |
+| 102 | Duna | Ficção científica | 80,50 |
+| 103 | Python para Dados | Programação | 75,00 |
+| 104 | O Guia do Mochileiro | Ficção científica | 42,00 |
+
+Tabela de Vendas
+
+Tabela de fatos que relaciona clientes e produtos, registrando cada transação.
+As relações com Clientes e Produtos são lógicas, mantidas pelos campos de ID.
+
+
+CREATE OR REPLACE TABLE `t1engenharinadados.livraria_devsaber.Vendas` (
+    ID_Venda INT64,
+    ID_Cliente INT64,
+    ID_Produto INT64,
+    Data_Venda DATE,
+    Quantidade INT64
+);
+```
+
+Dados de Exemplo:
+
+| VENDA | CLIENTE | PRODUTO | DATA VENDA | QUANTIDADE |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | 1 | 101 | 2024-01-15 | 1 |
+| 2 | 2 | 102 | 2024-01-18 | 1 |
+| 3 | 3 | 103 | 2024-02-02 | 2 |
+| 4 | 1 | 104 | 2024-02-10 | 1 |
+
+---
+
+2. Ingestão de Dados: 
+
+insert_data_bigquery.sql
+Com o schema definido, a próxima etapa foi a ingestão dos dados de origem, que foram normalizados para evitar redundâncias. O script abaixo insere os dados de clientes e produtos de forma única em suas respectivas tabelas antes de popular a tabela de vendas, garantindo a consistência do modelo de dados.
+
+Atenção à Escalabilidade: O uso de INSERT INTO é ideal para este projeto de pequena escala. Para cenários de Big Data com milhões de registros, seria mais eficiente utilizar métodos como o carregamento em lote via Google Cloud Storage.
+
+---
+
+3. Análise e Reuso:
+
+analysis_queries_bigquery.sql
+
+Esta etapa é a de extração de valor. O script a seguir contém consultas de exemplo que respondem a perguntas de negócio e, mais importante, a criação de uma VIEW para reuso e abstração da lógica de JOINs complexos.
+Otimização de custos: A consulta na VIEW é otimizada, pois o BigQuery cobra pela quantidade de dados processados. Ao usá-la, a equipe da livraria pode executar a mesma lógica de forma consistente e com menos linhas de código.
+
+
+Análise e Respostas 
+
+Perguntas sobre a Estrutura
+
+Com base nos dados brutos, quais outras duas tabelas precisamos criar? Que colunas e tipos de dados elas teriam?
+Resposta: Precisamos de uma tabela Produtos (colunas: ID_Produto INT64, Nome_Produto STRING, Categoria_Produto STRING, Preco_Produto NUMERIC) e uma tabela Vendas (colunas: ID_Venda INT64, ID_Cliente INT64, ID_Produto INT64, Data_Venda DATE, Quantidade INT64).
+
+ Se o BigQuery não tem chaves estrangeiras, como garantimos que um ID_Cliente na tabela de vendas realmente existe na tabela de clientes?
+Resposta: A responsabilidade por essa integridade é transferida para o processo de ETL e para as consultas. Garantimos a consistência no momento da análise, utilizando a cláusula JOIN com a condição Vendas.ID_Cliente = Clientes.ID_Cliente. Se um ID não existir na tabela Clientes, a linha correspondente simplesmente não será retornada com um INNER JOIN.
+
+ Perguntas sobre a Ingestão.
+
+ Por que é uma boa prática inserir os clientes e produtos em suas próprias tabelas antes de inserir os dados de vendas?
+Resposta: Esta é uma prática de normalização. Ela evita a duplicação de informações de clientes e produtos, o que melhora a integridade, reduz o espaço de armazenamento e simplifica atualizações futuras.
+
+ Em um cenário com milhões de vendas por dia, o INSERT INTO seria a melhor abordagem?
+Resposta: Não. O INSERT INTO é eficiente apenas para pequenos volumes. Para milhões de registros, a abordagem recomendada seria o carregamento em lote de arquivos via Google Cloud Storage ou a ingestão por streaming.
+
+ Perguntas sobre a VIEW.
+
+Qual é a principal vantagem de usar uma VIEW em vez de simplesmente salvar o código em um arquivo de texto?
+Resposta: A VIEW é um objeto do banco de dados que pode ser consultado como uma tabela. Ela simplifica o acesso a lógicas complexas, promove o reuso de código e garante que todos os analistas usem a mesma definição para o relatório.
+
+Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
+
+Resposta: Sim. Como a VIEW é lógica, ela executa a consulta subjacente a cada vez que é acessada. Isso significa que o Valor_Total será recalculado com os preços mais recentes da tabela Produtos.
