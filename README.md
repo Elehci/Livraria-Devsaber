@@ -1,4 +1,4 @@
- Pipeline de Dados e Análise com SQL no BigQuery
+📊 Pipeline de Dados e Análise com SQL no BigQuery
 
 1. Objetivo
 
@@ -119,9 +119,11 @@ Análise e Respostas
 Perguntas sobre a Estrutura
 
 Com base nos dados brutos, quais outras duas tabelas precisamos criar? Que colunas e tipos de dados elas teriam?
+
 Resposta: Precisamos de uma tabela Produtos (colunas: ID_Produto INT64, Nome_Produto STRING, Categoria_Produto STRING, Preco_Produto NUMERIC) e uma tabela Vendas (colunas: ID_Venda INT64, ID_Cliente INT64, ID_Produto INT64, Data_Venda DATE, Quantidade INT64).
 
  Se o BigQuery não tem chaves estrangeiras, como garantimos que um ID_Cliente na tabela de vendas realmente existe na tabela de clientes?
+ 
 Resposta: A responsabilidade por essa integridade é transferida para o processo de ETL e para as consultas. Garantimos a consistência no momento da análise, utilizando a cláusula JOIN com a condição Vendas.ID_Cliente = Clientes.ID_Cliente. Se um ID não existir na tabela Clientes, a linha correspondente simplesmente não será retornada com um INNER JOIN.
 
  Perguntas sobre a Ingestão.
@@ -135,9 +137,11 @@ Resposta: Não. O INSERT INTO é eficiente apenas para pequenos volumes. Para mi
  Perguntas sobre a VIEW.
 
 Qual é a principal vantagem de usar uma VIEW em vez de simplesmente salvar o código em um arquivo de texto?
+
 Resposta: A VIEW é um objeto do banco de dados que pode ser consultado como uma tabela. Ela simplifica o acesso a lógicas complexas, promove o reuso de código e garante que todos os analistas usem a mesma definição para o relatório.
 
 Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
 
 Resposta: Sim. Como a VIEW é lógica, ela executa a consulta subjacente a cada vez que é acessada. Isso significa que o Valor_Total será recalculado com os preços mais recentes da tabela Produtos.
+
 
