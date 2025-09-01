@@ -2,7 +2,7 @@
 Mini Projeto SQL
 Markdown
  Mini-Projeto: Pipeline de Dados e Análise com SQL no BigQuery
-
+9d
 Aluna: Michele Cristina Fonseca 
 Grupo 3_14
 
