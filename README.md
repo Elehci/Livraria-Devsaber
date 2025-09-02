@@ -65,7 +65,7 @@ CREATE OR REPLACE TABLE `t1engenharinadados.livraria_devsaber.Produtos` (
 
 
 | | Nome Produto | Categoria Produto | Preco Produto |
-| :--- | :--- | :--- | :--- |
+| :------ | :------ | :------ | :------ |
 | 101 | Fundamentos de SQL | Dados | 60,00 |
 | 102 | Duna | Ficção científica | 80,50 |
 | 103 | Python para Dados | Programação | 75,00 |
@@ -143,5 +143,6 @@ Resposta: A VIEW é um objeto do banco de dados que pode ser consultado como uma
 Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
 
 Resposta: Sim. Como a VIEW é lógica, ela executa a consulta subjacente a cada vez que é acessada. Isso significa que o Valor_Total será recalculado com os preços mais recentes da tabela Produtos.
+
 
 
