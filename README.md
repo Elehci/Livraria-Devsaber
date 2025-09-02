@@ -1,6 +1,6 @@
-📊 Pipeline de Dados e Análise com SQL no BigQuery
+Análiseeeline de Dados e Análise com SQL no BigQuery
 
-1. Objetivo
+1. **Objetivo**
 
 Este projeto demonstra a construção de um pipeline de dados analítico no Google BigQuery, transformando dados transacionais brutos de uma livraria online na Livraria DevSaber em um mini data warehouse. O objetivo foi resolver o desafio de gerenciar dados dispersos em planilhas, garantindo a integridade das informações e permitindo a extração de insights valiosos para o negócio.
 
@@ -111,12 +111,10 @@ Atenção à Escalabilidade: O uso de INSERT INTO é ideal para este projeto de 
 analysis_queries_bigquery.sql
 
 Esta etapa é a de extração de valor. O script a seguir contém consultas de exemplo que respondem a perguntas de negócio e, mais importante, a criação de uma VIEW para reuso e abstração da lógica de JOINs complexos.
-Otimização de custos: A consulta na VIEW é otimizada, pois o BigQuery cobra pela quantidade de dados processados. Ao usá-la, a equipe da livraria pode executar a mesma lógica de forma consistente e com menos linhas de código.
+Otimização de custos: A consulta na VIEW é otimizada, pois o BigQuery cobra pela quantidade de dados processados. Ao usá-la, a equipe da livraria pode executar a mesma lógica de forma consistente e com menos linhas de código
 
-
-Análise e Respostas 
-
-Perguntas sobre a Estrutura
+Perguntas e Respostas.
+Análise sobre a Estrutura.
 
 Com base nos dados brutos, quais outras duas tabelas precisamos criar? Que colunas e tipos de dados elas teriam?
 
@@ -143,6 +141,7 @@ Resposta: A VIEW é um objeto do banco de dados que pode ser consultado como uma
 Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
 
 Resposta: Sim. Como a VIEW é lógica, ela executa a consulta subjacente a cada vez que é acessada. Isso significa que o Valor_Total será recalculado com os preços mais recentes da tabela Produtos.
+
 
 
 
