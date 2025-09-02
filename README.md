@@ -1,4 +1,4 @@
-Análiseeeline de Dados e Análise com SQL no BigQuery
+📊 Pipeline de Dados e Análise com SQL no BigQuery
 
 1. **Objetivo**
 
@@ -141,6 +141,7 @@ Resposta: A VIEW é um objeto do banco de dados que pode ser consultado como uma
 Se o preço de um produto mudar na tabela Produtos, o Valor_Total na VIEW será atualizado automaticamente na próxima vez que a consultarmos?
 
 Resposta: Sim. Como a VIEW é lógica, ela executa a consulta subjacente a cada vez que é acessada. Isso significa que o Valor_Total será recalculado com os preços mais recentes da tabela Produtos.
+
 
 
 
